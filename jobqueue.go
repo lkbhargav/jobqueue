@@ -30,7 +30,7 @@ type JobRelatedData struct {
 
 // JobStatus => provides an interface for apps to implement and make it compatible with jobqueue
 type JobStatus interface {
-	Run(jr JobRelated, args ...interface{}) bool
+	Run(jr JobRelated, args ...interface{})
 }
 
 // JobInfo => used to expose data to the user
@@ -53,7 +53,7 @@ var jobInProgress bool
 func Init() Master {
 	jobs = make(map[string]JobRelatedData)
 
-	ticker := time.NewTicker(5 * time.Second) // ticker that runs every couple seconds triggering the loop in the goroutine
+	ticker := time.NewTicker(1 * time.Second) // ticker that runs every couple seconds triggering the loop in the goroutine
 	done := make(chan bool)
 
 	go func() {
@@ -94,7 +94,7 @@ func Init() Master {
 }
 
 func compute(js JobStatus, jr JobRelated, args ...interface{}) { // The method that implements our interfaces | HERO
-	js.Run(jr, args)
+	js.Run(jr, args...)
 }
 
 // Add => helps add a job
@@ -108,6 +108,13 @@ func (m Master) Add(job JobRelatedData) JobRelated {
 	m.jobs[jobID] = job
 
 	return JobRelated{jobID: jobID}
+}
+
+// Block => enables to wait for indefinite time
+func (m Master) Block() {
+	var ch chan bool
+
+	<-ch
 }
 
 // GetListOfJobs => gets us a loop of jobs with relevant info for quick reference
