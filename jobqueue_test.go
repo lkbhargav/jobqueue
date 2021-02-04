@@ -32,7 +32,7 @@ func TestJobsList(t *testing.T) {
 	aJob.name = "Test job"
 	aJob.timeout = 5
 
-	jqueue := Init()
+	jqueue := Init(100)
 	defer jqueue.EndJobQueue()
 
 	jqueue.Add(JobRelatedData{Description: "Test 1", Priority: Low, JobStatus: aJob, Params: []interface{}{"Yudhistira", "anything else 1"}})
@@ -80,7 +80,7 @@ func TestForKillingARunningJob(t *testing.T) {
 	aJob.name = "Test job 2"
 	aJob.timeout = 20
 
-	jqueue := Init()
+	jqueue := Init(100)
 	defer jqueue.EndJobQueue()
 
 	jqueue.Add(JobRelatedData{Description: "Test 1", Priority: Low, JobStatus: aJob, Params: []interface{}{"Yudhistira", "anything else 1"}})
@@ -100,7 +100,7 @@ func TestForKillingAInvalidJob(t *testing.T) {
 	aJob.name = "Test job 3"
 	aJob.timeout = 20
 
-	jqueue := Init()
+	jqueue := Init(100)
 	defer jqueue.EndJobQueue()
 
 	jqueue.Add(JobRelatedData{Description: "Test 1", Priority: Low, JobStatus: aJob, Params: []interface{}{"Yudhistira", "anything else 1"}})
@@ -120,7 +120,7 @@ func TestForAfterKillingJobQueue(t *testing.T) {
 	aJob.name = "Test job 3"
 	aJob.timeout = 20
 
-	jqueue := Init()
+	jqueue := Init(100)
 
 	jqueue.Add(JobRelatedData{Description: "Test 1", Priority: Low, JobStatus: aJob, Params: []interface{}{"Yudhistira", "anything else 1"}})
 	jqueue.Add(JobRelatedData{Description: "Test 2", Priority: High, JobStatus: aJob, Params: []interface{}{"Arjuna", "anything else 2"}})

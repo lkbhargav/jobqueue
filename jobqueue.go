@@ -79,10 +79,13 @@ const characters string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0
 var jobs map[string]JobRelatedData
 var jobInProgress bool
 var jobsMutex sync.Mutex
+var cleanUpTime int
 
 // Init => helps initialize
-func Init() Master {
+func Init(cleanUpTimeInMinutes int) Master {
 	jobs = make(map[string]JobRelatedData)
+
+	cleanUpTime = cleanUpTimeInMinutes
 
 	ticker := time.NewTicker(1 * time.Second) // ticker that runs every couple seconds triggering the loop in the goroutine
 	done := make(chan bool)
@@ -117,8 +120,8 @@ func Init() Master {
 									jobs[jobID] = v // updating the jobs map with updated values
 									jobsMutex.Unlock()
 
-									go func() { // we will remove the job from the list only after 24 hours
-										time.Sleep(24 * time.Hour)
+									go func() { // we will remove the job from the list only after cleanUpTime time in minutes
+										time.Sleep(time.Duration(cleanUpTime) * time.Minute)
 										delete(jobs, jobID) // remove the job that just got completed executing
 									}()
 
